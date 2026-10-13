@@ -1,0 +1,28 @@
+[
+  {
+    "output": "M4A1_Shot",
+    "source": "AR-15/D_24P.wav",
+    "modification": "First isolated recorded shot, trimmed, normalized, mono 48kHz",
+    "start": 0.5448541666666666
+  },
+  {
+    "output": "AKM_Shot",
+    "source": "AK-47/C_27P.wav",
+    "modification": "First isolated recorded shot, trimmed, normalized, mono 48kHz",
+    "start": 0.26540625
+  },
+  {
+    "output": "Reload.wav",
+    "source": "https://opengameart.org/content/gun-reload-sounds",
+    "author": "SpringySpringo",
+    "license": "CC0",
+    "sha256": "efb2d724d634eabe6ba8d3065686abca848bb7497d4d43a5e4aed5e5ea23016f"
+  },
+  {
+    "output": "Wind.ogg",
+    "source": "https://opengameart.org/content/wind-whoosh-loop",
+    "author": "SketchMan3; original ambience by JaggedStone",
+    "license": "CC0",
+    "sha256": "0cfdbd3f21ed449689a9024264edf267d0037a6495813a7010827672ec191dac"
+  }
+]

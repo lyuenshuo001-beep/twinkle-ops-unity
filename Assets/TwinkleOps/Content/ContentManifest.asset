@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e326ec79dc0fb747be0e2702f7bc514, type: 3}
+  m_Name: ContentManifest
+  m_EditorClassIdentifier: TwinkleOps.Runtime::TwinkleOps.ContentManifest
+  environment: {fileID: 3789417348366187010, guid: b5da56ac1c5ef3d428d408629a30face, type: 3}
+  m4a1: {fileID: 7103430077597168794, guid: bfc506c0489bb8345ae04f0c056c7874, type: 3}
+  akm: {fileID: 749224809547580456, guid: 8978bbe89fe375b478203e01ba97537a, type: 3}
+  arms: {fileID: 3287114285062744803, guid: b88a94fcd9f87b04781fc771b207ef38, type: 3}
+  zombie: {fileID: 267709787348336202, guid: 12fe56f0db02f0f4e963d9106eccebd6, type: 3}
+  searchContainer: {fileID: 2300251379024359924, guid: ab4f3196ca1c9ea4282fed40a5b6dda0, type: 3}
+  droppedLoot: {fileID: 1549940127037789116, guid: 95546ba720021154b83617b1d5e775e7, type: 3}
+  weaponAnimator: {fileID: 9100000, guid: b3e93cc795f741540aeb1f26fd5d4b46, type: 2}
+  zombieAnimator: {fileID: 9100000, guid: ecd0ee4dbc9f08e45a3e6cb2ccb42217, type: 2}
+  gunshot: {fileID: 8300000, guid: a33083652dda8ba4598bdceac75366f9, type: 3}
+  akmGunshot: {fileID: 8300000, guid: 31b65b23765844b48b3a93fed4de9b13, type: 3}
+  reload: {fileID: 8300000, guid: 9df69494b0a781248aa3e54dcccc4f97, type: 3}
+  ambience: {fileID: 8300000, guid: f8980980498fb574cb9591423e116e75, type: 3}
+  itemIcons:
+  - {fileID: 21300000, guid: f5fdec37f4496a7469f122872083c0be, type: 3}
+  - {fileID: 21300000, guid: ca477b6aedf87494081b6a7eb4a122df, type: 3}
+  - {fileID: 21300000, guid: 969e0725c26991a4781ff434c6089258, type: 3}
+  - {fileID: 21300000, guid: 5f30ba4fa7c2858498ae9bf7a0fd1aa8, type: 3}
+  - {fileID: 21300000, guid: 51b96ca33ac918a4981a2664320e6325, type: 3}
+  - {fileID: 21300000, guid: 790825e41360f78479b1af051eefd2b8, type: 3}
+  - {fileID: 21300000, guid: 34ea404cd1137454cb40daf32eeaab44, type: 3}
+  - {fileID: 21300000, guid: 290b40148b89f11499a15c8f26279959, type: 3}
+  - {fileID: 21300000, guid: ab64ca3d3dfdece47b6a086ed1bd1827, type: 3}
+  - {fileID: 21300000, guid: f805b6aa044380d47812f320e79b06e0, type: 3}
+  - {fileID: 21300000, guid: 25ebae53ba2bbbb45ba507f13c2adee0, type: 3}
+  - {fileID: 21300000, guid: acc19808dd1f8cb41a30156e55322cca, type: 3}
+  licensesReviewed: 1
+  visualQualityReviewed: 1
+  credits: "# TWINKLE OPS \u2014 Asset credits and modifications\n\nAll listed resources are stored locally. This game contains no resources extracted from other commercial games.\n\n* M4A1 \u2014 3DModelsCC0, submitted by nisu. CC0. https://opengameart.org/content/m4a1-assault-rifle . URP material conversion and original charging-handle animation.\n* AKM \u2014 LonesomeDucky. CC0. https://opengameart.org/content/akm . Blender-to-FBX conversion and URP materials.\n* Unfinished Buildings \u2014 loafbrr_1. CC0. https://opengameart.org/content/unfinished-buildings . Selected structures arranged into a quarantine construction district; collision-only meshes hidden.\n* Infected worker model \u2014 Pixelhouse. CC BY 3.0, https://creativecommons.org/licenses/by/3.0/ . https://opengameart.org/content/zombie . Author website: http://www.pixelhouse.com.ar . Changes: scale, URP materials, humanoid retargeting.\n* Infected animations \u2014 Rikindle3D. CC0. https://opengameart.org/content/male-city-zombie-ready-for-use-in-game-engines . Humanoid retargeting and animation state machine. The original burned character mesh is not used in the raid.\n* First-person arms \u2014 para / MakeHuman team. CC0. https://opengameart.org/content/fps-arms-rigged-only . URP materials and original procedural poses.\n* Concrete Road Barrier \u2014 Amal Kumar; Barrel 03 \u2014 Serhii Khromov; Old Military Crate \u2014 Jack Mava; Asphalt 02 \u2014 Rob Tuytel. Poly Haven, CC0. https://polyhaven.com/license . Individual sources: https://polyhaven.com/a/concrete_road_barrier , https://polyhaven.com/a/barrel_03 , https://polyhaven.com/a/old_military_crate , https://polyhaven.com/a/asphalt_02 . Changes: 2K texture selection, URP conversion, crate variant selection.\n* Recorded AR-15 and AK-47 shots \u2014 Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney. CC0. https://opengameart.org/content/the-free-firearm-sound-library . Trimmed first shot, mono 48kHz, normalized. AR-15 recording accompanies the M4A1 model.\n* Rifle reload \u2014 SpringySpringo. CC0. https://opengameart.org/content/gun-reload-sounds . Recorded using airsoft equipment.\n* Wind loop \u2014 SketchMan3, derived from JaggedStone's Loopable Dungeon Ambience. CC0. https://opengameart.org/content/wind-whoosh-loop and https://opengameart.org/content/loopable-dungeon-ambience .\n* Noto Sans SC \u2014 Google / Noto contributors. SIL Open Font License 1.1; accompanying OFL.txt.\n* Item UI illustrations \u2014 original project artwork created for TWINKLE OPS.\n\nDownload source pages, SHA-256 hashes and original archives are retained under SourceAssets/OpenGameArt and SourceAssets/PolyHaven on the local drive. Only redistributable converted assets are intended for Git LFS.\n"
+  playerSpawn: {x: 0, y: 0.12, z: -23}
+  containerA: {x: 2, y: 0, z: -20}
+  containerB: {x: -4, y: 0, z: -10}
+  extraction: {x: 0, y: 0, z: 59}
+  extraContainers:
+  - {x: 2, y: 0, z: 1}
+  - {x: -10, y: 0, z: 12}
+  - {x: 2, y: 0, z: 21}
+  - {x: 17, y: 0.22, z: 5}
+  - {x: -24, y: 0.22, z: 18}
+  - {x: 17, y: 0.22, z: 40}
+  - {x: -4, y: 0, z: 48}
+  - {x: -26, y: 0.22, z: 29}
+  zombieSpawns:
+  - {x: 1, y: 0, z: 9}
+  - {x: -7, y: 0, z: 20}
+  - {x: 2, y: 0, z: 33}
+  - {x: 17, y: 0, z: 15}
+  - {x: -24, y: 0, z: 20}
+  - {x: 18, y: 0, z: 39}
+  - {x: -8, y: 0, z: 44}
+  weaponPosition: {x: 0.17, y: -0.17, z: 0.38}
+  weaponRotation: {x: 0, y: 180, z: 0}
+  weaponScale: {x: 1, y: 1, z: 1}

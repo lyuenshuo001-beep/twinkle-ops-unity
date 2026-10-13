@@ -1,0 +1,30 @@
+# Unity generated/cache content
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Bb]uilds/
+/Data/
+/UserSettings/
+/.vs/
+/.idea/
+*.csproj
+*.sln
+*.slnx
+*.user
+*.pidb
+*.booproj
+*.opendb
+*.VC.db
+*.unitypackage
+*.log
+*.tmp
+# Restricted third-party assets must not enter a public source repository.
+/Assets/ThirdPartyRestricted/
+/Assets/ThirdPartyRestricted.meta
+/SourceAssets/
+/Recordings/
+.DS_Store
+Thumbs.db
+/Assets/Resources/PerformanceTestRunInfo.json*
+/Assets/Resources/PerformanceTestRunSettings.json*

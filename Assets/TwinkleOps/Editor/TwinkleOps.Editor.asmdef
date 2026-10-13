@@ -1,0 +1,1 @@
+{"name":"TwinkleOps.Editor","references":["TwinkleOps.Runtime","Unity.AI.Navigation","Unity.RenderPipelines.Universal.Runtime"],"includePlatforms":["Editor"]}

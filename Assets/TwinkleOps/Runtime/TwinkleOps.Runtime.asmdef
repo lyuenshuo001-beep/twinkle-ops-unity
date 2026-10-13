@@ -1,0 +1,1 @@
+{"name":"TwinkleOps.Runtime","rootNamespace":"TwinkleOps","references":["Unity.InputSystem","Unity.AI.Navigation","Unity.RenderPipelines.Universal.Runtime"]}
