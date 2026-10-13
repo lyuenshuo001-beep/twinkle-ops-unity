@@ -9,7 +9,7 @@ Windows 使用 Mono，完整输出目录为 `D:\GameProjects\TwinkleOps\Builds\G
 
 Web 采用 gzip + decompressionFallback，兼容无法设置 Content-Encoding 的静态站点。当前为单线程 WebGL 2，不依赖 SharedArrayBuffer。游戏资源随构建本地打包，不依赖素材平台 CDN。
 
-网页仓库只放 Web 构建文件，不使用 Git LFS。GitHub Pages 采用 main 分支根目录并保留 `.nojekyll`。预期地址为 https://lyuenshuo001-beep.github.io/twinkle-ops-web/ ，是否已验证须查看 STATUS.md；不得仅根据预期地址宣称上线。
+网页仓库只放 Web 构建文件，不使用 Git LFS。GitHub Pages 采用 main 分支根目录并保留 `.nojekyll`。已部署并经浏览器验证的地址为 https://lyuenshuo001-beep.github.io/twinkle-ops-web/ 。具体测试边界见 STATUS.md。
 
 部署后运行 `node Tools/GameWebSmoke.cjs https://lyuenshuo001-beep.github.io/twinkle-ops-web/ pages-web`，检查真实 HTTPS 资源、Unity 启动、进入战区及操作截图。
 

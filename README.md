@@ -2,6 +2,8 @@
 
 Unity 6000.6.5f1 + URP 17.6 的单人末日搜打撤游戏，0.2.0 早期试玩。
 
+[网页试玩](https://lyuenshuo001-beep.github.io/twinkle-ops-web/) · [Windows 下载](https://github.com/lyuenshuo001-beep/twinkle-ops-unity/releases/tag/v0.2.0-alpha) · [实际验证记录](Docs/STATUS.md)
+
 当前战局包含真实贴图建筑、室内与楼梯、M4A1 / AKM、带追击及攻击动画的感染者、10 个可搜索容器、六档物资、网格背包、丢弃拾回、8 秒撤离和本地持久仓库。死亡或中途退出会损失本局战利品。
 
 这是第一阶段工程。手部握持、换弹动作、地图细节及移动设备性能还需打磨；尚不包含商店、完整改枪、多人联机、地下关卡、特殊感染者或 Boss。
