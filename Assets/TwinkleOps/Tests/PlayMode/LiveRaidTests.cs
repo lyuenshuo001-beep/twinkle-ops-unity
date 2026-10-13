@@ -43,6 +43,9 @@ namespace TwinkleOps.Tests
             InputSystem.QueueStateEvent(key,new KeyboardState()); yield return null;
             Assert.Greater(Vector3.Distance(before,player.transform.position),1,"W must move the physical controller");
             rifle.Equip(1); Assert.AreEqual("AKM",rifle.WeaponName); Assert.IsTrue(rifle.audioSource.isActiveAndEnabled,"Switching must preserve gun audio");
+            var gunBounds=rifle.weaponRoot.GetComponentInChildren<MeshRenderer>().bounds;
+            Assert.Greater(gunBounds.size.z,gunBounds.size.x*3,"AKM barrel must face forward, preserving imported axes");
+            Assert.Less(Vector3.Distance(rifle.muzzleFlash.transform.position,player.view.transform.position),2,"AKM muzzle must remain near the barrel after FBX scale conversion");
             Call(rifle,"Shoot"); Assert.AreEqual(29,rifle.ammo); rifle.Equip(0); Assert.AreEqual(30,rifle.ammo); rifle.Equip(1); Assert.AreEqual(29,rifle.ammo);
             // Start the same reload coroutine that the real input handler starts.
             rifle.StartCoroutine((IEnumerator)typeof(Rifle).GetMethod("Reload",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(rifle,null));

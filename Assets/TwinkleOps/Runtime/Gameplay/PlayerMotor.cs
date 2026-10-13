@@ -14,14 +14,16 @@ namespace TwinkleOps
         public int WeaponSelected=-1;
         CharacterController controller;
         float pitch, vertical;
+        bool useTouch;
         readonly MobileInput touch=new();
-        void Awake() { controller=GetComponent<CharacterController>(); }
+        void Awake() { controller=GetComponent<CharacterController>(); useTouch=Application.isMobilePlatform; }
         public void AddRecoil(float amount) { pitch=Mathf.Clamp(pitch-amount,-85,85); }
         void Update()
         {
             FireHeld=AimHeld=ReloadPressed=InteractPressed=BagPressed=SwitchPressed=false; WeaponSelected=-1;
             var key=Keyboard.current; var mouse=Mouse.current;
             BagPressed=key?.tabKey.wasPressedThisFrame==true;
+            if(Touchscreen.current!=null && Touchscreen.current.primaryTouch.press.isPressed) useTouch=true;
             touch.Read(); BagPressed |= touch.bag;
             if(!InputEnabled) { MoveInput=Vector2.zero; return; }
             if(key?.escapeKey.wasPressedThisFrame==true) { InputEnabled=false; return; }
@@ -46,7 +48,7 @@ namespace TwinkleOps
             float speed=key?.leftShiftKey.isPressed==true && !AimHeld?sprintSpeed:walkSpeed;
             controller.Move((transform.TransformDirection(new Vector3(MoveInput.x,0,MoveInput.y))*speed+Vector3.up*vertical)*Time.deltaTime);
         }
-        public void DrawTouch() { if(Touchscreen.current!=null && InputEnabled) touch.Draw(); }
+        public void DrawTouch() { if(useTouch && Touchscreen.current!=null && InputEnabled) touch.Draw(); }
     }
 
     // Screen fractions keep controls usable after orientation/viewport changes. Buttons are multi-touch.
