@@ -25,17 +25,19 @@ function save(extra){fs.writeFileSync(path.join(logs,prefix+'.json'),JSON.string
  if(!messages.some(m=>m.text.includes('TWINKLE_OPS_RAID_READY')))throw Error('Clicking Deploy did not load the real raid');
  await page.waitForTimeout(2500);
  await page.screenshot({path:path.join(logs,prefix+'-raid.png')});
- await page.mouse.click(box.x+box.width/2,box.y+box.height/2);
+ // Keep the pointer stationary after deployment; moving it while locked would rotate the view.
  await page.keyboard.press('2');await page.waitForTimeout(350);
  await page.mouse.down();await page.waitForTimeout(650);await page.mouse.up();
  await page.screenshot({path:path.join(logs,prefix+'-ak-fire.png')});
  await page.keyboard.press('r');await page.waitForTimeout(3500);
+ await page.keyboard.press('3');await page.waitForTimeout(500);await page.mouse.down();await page.waitForTimeout(220);await page.mouse.up();await page.screenshot({path:path.join(logs,prefix+'-knife.png')});
+ await page.keyboard.press('4');await page.waitForTimeout(500);await page.mouse.down();await page.waitForTimeout(100);await page.mouse.up();await page.screenshot({path:path.join(logs,prefix+'-shotgun.png')});
  await page.keyboard.down('w');await page.waitForTimeout(1000);await page.keyboard.up('w');
  await page.keyboard.press('Tab');await page.waitForTimeout(700);
  await page.screenshot({path:path.join(logs,prefix+'-inventory.png')});
  const geometry=await canvas.evaluate(c=>({width:c.width,height:c.height,cssWidth:c.clientWidth,cssHeight:c.clientHeight}));
  const runtimeErrors=messages.filter(m=>/Exception:|RuntimeError:|Aborting\(|Error while loading|NullReferenceException/.test(m.text));
- save({boot:true,raid:true,uiInputsSent:['deploy','weapon2','fire','reload','move','inventory'],geometry,runtimeErrors});
+ save({boot:true,raid:true,uiInputsSent:['deploy','weapon2','fire','reload','knife','melee','weapon4','shotgun','move','inventory'],geometry,runtimeErrors});
  if(errors.length||requests.length||runtimeErrors.length)throw Error('Browser errors detected; inspect '+prefix+'.json');
  console.log(JSON.stringify({url,boot:true,raid:true,errors:0,failedRequests:0}));
 })().catch(e=>{save({failure:e.message});console.error(e);process.exitCode=1}).finally(async()=>{if(browser)await browser.close()});

@@ -11,4 +11,5 @@ $credits=[regex]::Replace($credits,'https?://[^\s]+','<a href="$0">$0</a>')
 $page='<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TWINKLE OPS · 资源署名</title><style>body{background:#10191c;color:#dbe5e1;font:15px/1.8 system-ui;max-width:920px;margin:40px auto;padding:24px}a{color:#acd7bd}pre{white-space:pre-wrap;overflow-wrap:anywhere}</style><a href="./">← 返回游戏</a><h1>资源来源与授权</h1><pre>'+$credits+'</pre></html>'
 [IO.File]::WriteAllText((Join-Path $BuildDirectory 'credits.html'),$page,[Text.UTF8Encoding]::new($false))
 [IO.File]::WriteAllText((Join-Path $BuildDirectory '.nojekyll'),'')
+[IO.File]::WriteAllText((Join-Path $BuildDirectory 'version.json'),('{"version":"1.1.0-alpha","dataHash":"'+$version+'"}'))
 Write-Output "Web shell ready: $version"

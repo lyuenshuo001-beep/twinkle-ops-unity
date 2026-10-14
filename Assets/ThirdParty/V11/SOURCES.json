@@ -1,0 +1,231 @@
+[
+  {
+    "asset": "metal_trash_can",
+    "source": "https://polyhaven.com/a/metal_trash_can",
+    "license": "CC0",
+    "authors": {
+      "GurJas Studios": "All"
+    },
+    "files": [
+      {
+        "name": "model.fbx",
+        "sha256": "e5f5176cccf94a09b05350f2500f11ec7ffed191247f5ccf908f9936324ebca0"
+      },
+      {
+        "name": "diff.jpg",
+        "sha256": "920c895a31b1cd2c000123c0592c70c33d46562752987da98070e7e0eebb662f"
+      },
+      {
+        "name": "normal.jpg",
+        "sha256": "b977f17aa9d4718ffc91a62868b7171b4479578b8cffd1d32001d92552af81a4"
+      },
+      {
+        "name": "rough.jpg",
+        "sha256": "14045c25c85523baf918c6d446b080f71cf8efe3acd49a669435ed5318b83f63"
+      },
+      {
+        "name": "metal.jpg",
+        "sha256": "fee3d91b561e5c36f48815396251deb3c745e484d43295d8bbce4c13d4adbd8c"
+      }
+    ]
+  },
+  {
+    "asset": "metal_toolbox",
+    "source": "https://polyhaven.com/a/metal_toolbox",
+    "license": "CC0",
+    "authors": {
+      "Mateusz Sadek": "All"
+    },
+    "files": [
+      {
+        "name": "model.fbx",
+        "sha256": "bf46eab37ecae1d207cdf10cf67cd8b43004453bf0625930c038926d28d902b9"
+      },
+      {
+        "name": "diff.jpg",
+        "sha256": "21e1d21880e49db3fde0457d53b78a70db61234a201da9f0181dd0880b110473"
+      },
+      {
+        "name": "normal.jpg",
+        "sha256": "7ba19a233bcfff9c3d95b62c3a992c8e19cb2d6355c98d6e12bdc756a8af44cf"
+      },
+      {
+        "name": "rough.jpg",
+        "sha256": "85b7cea2c48d55b6b313d717835ffc0e5185fb5a98dbe56442299d515310a515"
+      },
+      {
+        "name": "metal.jpg",
+        "sha256": "a1b2a8f24fcb840e9a38929d2c315d986a47e269b39b750ab4750256d359777e"
+      }
+    ]
+  },
+  {
+    "asset": "vintage_suitcase",
+    "source": "https://polyhaven.com/a/vintage_suitcase",
+    "license": "CC0",
+    "authors": {
+      "Maximilian Schuster": "All"
+    },
+    "files": [
+      {
+        "name": "model.fbx",
+        "sha256": "cc1953551698fd7e1e8edc57da7bfa11419539d66caa502989b4768d134fdd94"
+      },
+      {
+        "name": "diff.jpg",
+        "sha256": "d8d82b8d08c9400f6f2a9f9736175ba0555ed6c5132cdd97a273d19be3f9db76"
+      },
+      {
+        "name": "normal.jpg",
+        "sha256": "77ea4998ae6c0d51b3ed72831216b814d8852c51c24d8bc99da83fe29b6535a5"
+      },
+      {
+        "name": "rough.jpg",
+        "sha256": "cf3ae88bd17729e058a2ad2ba66560ab68ec5bfd47ee284c662b52f36260be9c"
+      },
+      {
+        "name": "metal.jpg",
+        "sha256": "34b7641a7f8fbd08b5f82d41c671233120e298035197172383b47fabe4e57dfa"
+      }
+    ]
+  },
+  {
+    "asset": "trashbag",
+    "source": "https://polyhaven.com/a/trashbag",
+    "license": "CC0",
+    "authors": {
+      "Benny Weimer": "All"
+    },
+    "files": [
+      {
+        "name": "model.fbx",
+        "sha256": "c4255ca3ee1b586a00a85cf57813b1701b642358dfe49119e5575841d6c77f7f"
+      },
+      {
+        "name": "diff.jpg",
+        "sha256": "4c7b506424f8d0cc797e5b00aed0f50231a55ca479a410800035594296ba4a8b"
+      },
+      {
+        "name": "normal.jpg",
+        "sha256": "33ddb9711bb3ab2ff1ed19fa361a4251909643fada7e5579a28f6346a58b4daf"
+      },
+      {
+        "name": "rough.jpg",
+        "sha256": "77a9bfa5c78301e325250f520a279f73c8563e3c688358ce8814ad58b7b993ea"
+      }
+    ]
+  },
+  {
+    "asset": "old_bed_frame",
+    "source": "https://polyhaven.com/a/old_bed_frame",
+    "license": "CC0",
+    "authors": {
+      "Luca B": "All"
+    },
+    "files": [
+      {
+        "name": "model.fbx",
+        "sha256": "fe2a043b62546d617d5e617e07adf5ee9fb1455687bf68e21e0fcd9fa011829c"
+      },
+      {
+        "name": "diff.jpg",
+        "sha256": "eb9929f07eb43f530562a6ba05d0653f937474ab76e0e5dccea40ec64744a6e0"
+      },
+      {
+        "name": "normal.jpg",
+        "sha256": "4c3d5132ae537a70d30216bb6055273fd00735e13b6c9d5064e0e545227ecba1"
+      },
+      {
+        "name": "rough.jpg",
+        "sha256": "5497c7a263308eebeed53c06749b52ea671186464dee02bd63013b513f2ec2c7"
+      },
+      {
+        "name": "metal.jpg",
+        "sha256": "f69b1c4c321da0ed87075b01a7cfd0268fe13e26c0ca8c266c645b9136566361"
+      }
+    ]
+  },
+  {
+    "asset": "Shelf_01",
+    "source": "https://polyhaven.com/a/Shelf_01",
+    "license": "CC0",
+    "authors": {
+      "Gabriel Radić": "All"
+    },
+    "files": [
+      {
+        "name": "model.fbx",
+        "sha256": "3c1987d8913f6cdc762e705a3347da77c241b635ce551448ff2b89e1d9166f69"
+      },
+      {
+        "name": "diff.jpg",
+        "sha256": "875bb8110dec4f409d9127cba95f7c0ead02bdfeef6dd47232df939e4de35a5c"
+      },
+      {
+        "name": "normal.jpg",
+        "sha256": "c817d7966974be2da13e4b0a57918e8e142edc50eb41d438229c3bad70df0f91"
+      },
+      {
+        "name": "rough.jpg",
+        "sha256": "cdcbf1cbad05ac35ab4ed0bc636d5d486413e22dad5cbe9fc4314386c972388f"
+      },
+      {
+        "name": "metal.jpg",
+        "sha256": "5eb3d529bcd4122842c7cc0295747afe6835efb3c631e016a4a11a376dea2cf8"
+      }
+    ]
+  },
+  {
+    "asset": "tool_cart",
+    "source": "https://polyhaven.com/a/tool_cart",
+    "license": "CC0",
+    "authors": {
+      "Savva Zakharov": "All"
+    },
+    "files": [
+      {
+        "name": "model.fbx",
+        "sha256": "df39f10c3cc3985b486ea747334e3f1b89008bd34d8fd333f5205ef1f1f10634"
+      },
+      {
+        "name": "diff.jpg",
+        "sha256": "3a3e18efa54d18f2d01ad51cb40f8edd9af76e054a6a9c21324bc14fe49be965"
+      },
+      {
+        "name": "normal.jpg",
+        "sha256": "fa995e77eacad81c78f650e28a6d4c1c7b9d6c74a3f314d5f5ebdddf6de510fc"
+      },
+      {
+        "name": "rough.jpg",
+        "sha256": "a9ad26d28327fcca2eff0e637e442f3473b6b5ce4c7b729875cec6475316dcf4"
+      },
+      {
+        "name": "metal.jpg",
+        "sha256": "ea098fbbfb4f0df2b10e47a0e3dde6830bae0116fc4b1cc623dd75305dae31c6"
+      }
+    ]
+  },
+  {
+    "asset": "Safe",
+    "source": "https://opengameart.org/content/metal-safe-with-combination-lock",
+    "download": "https://opengameart.org/sites/default/files/safe_9.blend",
+    "sha256": "101483d4697d7739388dd210ee6ce4b16d36485962a3a82d570b1935cf8d77a3",
+    "license": "CC BY-SA 3.0",
+    "author": "johndh"
+  },
+  {
+    "asset": "M870",
+    "source": "https://opengameart.org/content/shotgun-1",
+    "download": "https://opengameart.org/sites/default/files/Shotgun_2.zip",
+    "sha256": "577d8a317c971e9ea1fe7038800111fa5ca6ca1437c299c66a7e749f994b1d75",
+    "license": "CC0",
+    "author": "MikeMoon"
+  },
+  {
+    "asset": "M9 Knife",
+    "author": "khairul169",
+    "license": "CC0",
+    "source": "https://opengameart.org/content/m9-knife-pbr",
+    "sha256": "c22e5be98e937a5b135209fb2af6fbfa2bdd0e0f7069c08fbf9870a4e4ae8145"
+  }
+]

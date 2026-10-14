@@ -26,9 +26,14 @@ namespace TwinkleOps
             var cam=rifle.motor.view.transform; var gun=rifle.weaponRoot;
             Vector3 right=gun.position+cam.TransformVector(new Vector3(.015f,-.055f,-.12f));
             Vector3 left=gun.position+cam.TransformVector(new Vector3(-.035f,-.045f,.16f));
+            if(rifle.IsMelee)
+            {
+                right=gun.position+cam.TransformVector(new Vector3(0,-.015f,-.11f));
+                left=cam.TransformPoint(new Vector3(-.23f,-.33f,.29f));
+            }
             if(rifle.Reloading) left+=cam.TransformVector(new Vector3(.02f,-.13f,-.12f));
-            Solve("R",right,cam.right+Vector3.down,cam);
-            Solve("L",left,-cam.right+Vector3.down,cam);
+            Solve("R",right,cam.right-cam.up,cam);
+            Solve("L",left,-cam.right-cam.up,cam);
         }
         void Solve(string side,Vector3 target,Vector3 bend,Transform cam)
         {

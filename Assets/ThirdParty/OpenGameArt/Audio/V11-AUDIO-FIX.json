@@ -1,0 +1,6 @@
+{
+  "source": "CC0 Firearm Library AK-47/C_27P.wav",
+  "problem": "The old 1.35 second cut contained about 10 automatic discharges.",
+  "fix": "Isolated final discharge at old-cut 0.822s, preserved decay, short edge fades. New file, old retained for comparison.",
+  "singleShotLength": 0.528
+}

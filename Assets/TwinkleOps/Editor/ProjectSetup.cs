@@ -77,7 +77,10 @@ namespace TwinkleOps.Editor
                         throw new BuildFailedException("Missing/unsupported material: "+renderer.name);
             }
             ValidateAnimator(m.weaponAnimator,new[]{"Fire","Reload","ADS"});
-            ValidateAnimator(m.zombieAnimator,new[]{"Speed","Attack","Hit","Death"});
+            ValidateAnimator(m.zombieAnimator,new[]{"Speed","Stride"});
+            var infectedController=(UnityEditor.Animations.AnimatorController)m.zombieAnimator;
+            foreach(var state in new[]{"Locomotion","AttackA","AttackB","Lunge","Hit","Death"})
+                if(!infectedController.layers[0].stateMachine.states.Any(s=>s.state.name==state))throw new BuildFailedException("Infected animator missing state: "+state);
             Debug.Log("TWINKLE_OPS_ART_GATE_OK");
         }
         static void ValidateAnimator(RuntimeAnimatorController runtime,string[] parameters)
@@ -170,7 +173,7 @@ namespace TwinkleOps.Editor
             Directory.CreateDirectory(folder+"/ThirdPartyNotices");
             File.Copy(Root+"/UI/OFL.txt",folder+"/ThirdPartyNotices/NotoSansSC-OFL.txt",true);
             File.Copy("Docs/CREDITS.md",folder+"/ThirdPartyNotices/CREDITS.md",true);
-            File.WriteAllText(folder+"/BUILD-STATUS.txt",foundation?"ENGINEERING VALIDATION ONLY. Lobby shell; art assets and playable raid are not included. Not a completed game.":"Phase 1 build. See Docs/QA.md for manual acceptance requirements.");
+            File.WriteAllText(folder+"/BUILD-STATUS.txt",foundation?"ENGINEERING VALIDATION ONLY. Lobby shell; art assets and playable raid are not included. Not a completed game.":"V1.1 early playable build. See Docs/V1.1-QA.md for verified behavior and remaining art/animation limitations.");
             Debug.Log("TWINKLE_OPS_BUILD_OK: "+platform+" foundation="+foundation);
         }
         [Serializable] sealed class BuildRecord { public string result; public ulong bytes; public double seconds; public bool foundation; }

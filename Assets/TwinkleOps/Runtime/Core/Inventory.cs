@@ -99,5 +99,7 @@ namespace TwinkleOps
             { var rarity=RollRarity(random.Next(1000)); var pool=Items.All.Where(x=>x.rarity==rarity).ToArray(); result.Add(pool[random.Next(pool.Length)].id); }
             return result;
         }
+        public static string RollOfRarity(Random random,Rarity rarity)
+        { var pool=Items.All.Where(x=>x.rarity==rarity).ToArray();return pool[random.Next(pool.Length)].id; }
     }
 }

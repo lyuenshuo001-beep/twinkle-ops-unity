@@ -3,6 +3,7 @@ namespace TwinkleOps
 {
     public sealed class ExtractionZone : MonoBehaviour
     {
+        public string displayName="北侧撤离";
         public float radius=3, seconds=8;
         public float Remaining { get; private set; }
         void OnEnable() { Remaining=seconds; }

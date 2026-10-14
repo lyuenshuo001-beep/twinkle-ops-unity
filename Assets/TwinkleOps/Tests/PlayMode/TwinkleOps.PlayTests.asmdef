@@ -1,1 +1,1 @@
-{"name":"TwinkleOps.PlayTests","references":["TwinkleOps.Runtime","Unity.InputSystem"],"optionalUnityReferences":["TestAssemblies"]}
+{"name":"TwinkleOps.PlayTests","references":["TwinkleOps.Runtime","Unity.InputSystem","Unity.RenderPipelines.Universal.Runtime","Unity.RenderPipelines.Core.Runtime"],"optionalUnityReferences":["TestAssemblies"]}

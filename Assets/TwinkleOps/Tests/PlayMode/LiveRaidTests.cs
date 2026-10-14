@@ -34,8 +34,9 @@ namespace TwinkleOps.Tests
             Call(app,"Begin");
             for(int i=0;i<100 && !app.Player;i++) yield return new WaitForSeconds(.1f);
             Assert.NotNull(app.Player,"Lobby must enter the real raid: "+typeof(GameApp).GetField("notice",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(app));
-            var player=app.Player; var rifle=player.GetComponent<Rifle>(); Assert.AreEqual(2,rifle.weapons.Length);
-            var boxes=Object.FindObjectsByType<LootContainer>(FindObjectsSortMode.None); Assert.AreEqual(10,boxes.Length);
+            var player=app.Player; var rifle=player.GetComponent<Rifle>(); Assert.GreaterOrEqual(rifle.weapons.Length,4);
+            var director=Object.FindAnyObjectByType<InfectedDirector>();if(director)director.enabled=false;
+            var boxes=Object.FindObjectsByType<LootContainer>(FindObjectsSortMode.None); Assert.GreaterOrEqual(boxes.Length,20);
             var key=testKeyboard=InputSystem.AddDevice<Keyboard>(); key.MakeCurrent(); var before=player.transform.position;
             InputSystem.QueueStateEvent(key,new KeyboardState(Key.W)); yield return new WaitForSeconds(.5f);
             Assert.IsTrue(key.wKey.isPressed,"Synthetic keyboard must retain W during headless play");
@@ -46,7 +47,7 @@ namespace TwinkleOps.Tests
             var gunBounds=rifle.weaponRoot.GetComponentInChildren<MeshRenderer>().bounds;
             Assert.Greater(gunBounds.size.z,gunBounds.size.x*3,"AKM barrel must face forward, preserving imported axes");
             Assert.Less(Vector3.Distance(rifle.muzzleFlash.transform.position,player.view.transform.position),2,"AKM muzzle must remain near the barrel after FBX scale conversion");
-            Call(rifle,"Shoot"); Assert.AreEqual(29,rifle.ammo); rifle.Equip(0); Assert.AreEqual(30,rifle.ammo); rifle.Equip(1); Assert.AreEqual(29,rifle.ammo);
+            yield return new WaitForSeconds(.35f);Assert.IsTrue(rifle.TryFire()); Assert.AreEqual(29,rifle.ammo); rifle.Equip(0); Assert.AreEqual(30,rifle.ammo); rifle.Equip(1); Assert.AreEqual(29,rifle.ammo);
             // Start the same reload coroutine that the real input handler starts.
             rifle.StartCoroutine((IEnumerator)typeof(Rifle).GetMethod("Reload",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(rifle,null));
             yield return new WaitForSeconds(3); Assert.AreEqual(30,rifle.ammo); Assert.AreEqual(119,rifle.reserve);
@@ -54,7 +55,14 @@ namespace TwinkleOps.Tests
             foreach(var z in infected) { z.enabled=false; z.GetComponent<NavMeshAgent>().enabled=false; }
             var target=infected[0]; target.transform.position=player.transform.position+player.transform.forward*3;
             Physics.SyncTransforms();
-            Call(rifle,"Shoot"); Call(rifle,"Shoot"); Call(rifle,"Shoot"); Assert.LessOrEqual(target.health,0,"Real hitscan must kill the infected");
+            target.transform.rotation=Quaternion.LookRotation(-player.transform.forward);
+            target.animator.Play("Locomotion",0,0);target.animator.Update(.05f);
+            var head=target.animator.GetBoneTransform(HumanBodyBones.Head);
+            player.enabled=false;player.view.transform.LookAt(head.position+Vector3.up*.04f);
+            rifle.weapons[1].spread=0;rifle.weapons[1].aimSpread=0;
+            Assert.IsTrue(rifle.TryFire());yield return new WaitForSeconds(.12f);
+            if(!target.Dead){player.view.transform.LookAt(head.position);Assert.IsTrue(rifle.TryFire());}
+            Assert.LessOrEqual(target.health,0,"Real head hitscan must kill the infected");player.enabled=true;
             Assert.IsNotNull(rifle.muzzleFlash,"Weapon must include a muzzle effect");
             boxes[0].Reveal(); Assert.Greater(boxes[0].Contents.Count,0); Assert.IsTrue(boxes[0].Take(0,app.Session.Bag));
             int value=app.Session.Bag.TotalValue; Assert.Greater(value,0);

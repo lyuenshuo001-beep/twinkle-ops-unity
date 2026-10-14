@@ -5,7 +5,9 @@ const logs=path.resolve(__dirname,'../Logs'),url=process.argv[2]||'http://127.0.
 (async()=>{
  browser=await pw.chromium.launch({channel:'msedge',headless:true,args:['--enable-unsafe-swiftshader','--use-angle=swiftshader']});
  const ctx=await browser.newContext({...pw.devices['Pixel 7'],viewport:{width:915,height:412},deviceScaleFactor:1});
- const page=await ctx.newPage();const errors=[],messages=[];
+ const page=await ctx.newPage();const errors=[],messages=[],requests=[];
+ page.on('requestfailed',r=>requests.push({url:r.url(),failure:r.failure()}));
+ page.on('response',r=>{if(r.status()>=400)requests.push({url:r.url(),status:r.status()})});
  page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{messages.push(m.text());if(m.text().includes('TWINKLE_OPS'))console.log(m.text())});
  await page.goto(url);await page.waitForFunction(()=>window.twinkleReady===true,{},{timeout:240000});
  for(let i=0;i<90&&!messages.some(m=>m.includes('TWINKLE_OPS_BOOT_OK'));i++)await page.waitForTimeout(1000);
@@ -21,7 +23,13 @@ const logs=path.resolve(__dirname,'../Logs'),url=process.argv[2]||'http://127.0.
  await page.touchscreen.tap(c.x+c.width*.92,c.y+c.height*.61); // fire
  await page.waitForTimeout(500);
  await page.screenshot({path:path.join(logs,'web-mobile-emulated.png')});
- fs.writeFileSync(path.join(logs,'web-mobile-emulated.json'),JSON.stringify({url,scope:'Desktop Edge Pixel 7 landscape touch emulation; no physical mobile device tested',boot:true,raid:true,errors,messages},null,2));
- if(errors.length)throw Error('Mobile emulation has browser errors');
+ await page.touchscreen.tap(c.x+c.width*.58,c.y+c.height*.88); // dedicated knife button
+ await page.waitForTimeout(550);
+ await page.touchscreen.tap(c.x+c.width*.92,c.y+c.height*.61); // melee attack
+ await page.waitForTimeout(180);
+ await page.screenshot({path:path.join(logs,'web-mobile-knife.png')});
+ const runtimeErrors=messages.filter(m=>/Exception:|RuntimeError:|Aborting\(|Error while loading|NullReferenceException/.test(m));
+ fs.writeFileSync(path.join(logs,'web-mobile-emulated.json'),JSON.stringify({url,scope:'Desktop Edge Pixel 7 landscape touch emulation; no physical mobile device tested',boot:true,raid:true,uiInputsSent:['deploy','switch','fire','knife','melee'],errors,requests,runtimeErrors,messages},null,2));
+ if(errors.length||requests.length||runtimeErrors.length)throw Error('Mobile emulation has browser errors');
  console.log('MOBILE_EMULATION_RAID_OK');
 })().catch(e=>{console.error(e);process.exitCode=1}).finally(async()=>{if(browser)await browser.close()});

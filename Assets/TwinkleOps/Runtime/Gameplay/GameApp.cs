@@ -17,8 +17,19 @@ namespace TwinkleOps
         public PlayerMotor Player { get; private set; }
         Rifle rifle;
         float health=100, searching;
+        public float Health => health;
+        public bool UseMedicine(string instanceId)
+        {
+            if(!Player || Session==null || !Session.InRaid || health>=100)return false;
+            var item=Session.Bag.Entries.FirstOrDefault(x=>x.instanceId==instanceId);
+            if(item==null)return false;
+            float heal=item.itemId=="bandage"?25:item.itemId=="medicine"?55:0;
+            if(heal<=0 || !Session.Bag.Remove(instanceId))return false;
+            health=Mathf.Min(100,health+heal);notice="使用 "+item.Spec.name+"，恢复生命";return true;
+        }
         LootContainer container, searchingContainer;
         ExtractionZone extraction;
+        ExtractionZone[] exits=Array.Empty<ExtractionZone>();
         bool bagOpen, paused, loading;
         string notice="", fatal="";
         Vector2 stashScroll,lootScroll;
@@ -36,6 +47,7 @@ namespace TwinkleOps
         void Loaded(Scene scene,LoadSceneMode mode)
         {
             loading=false; Player=FindFirstObjectByType<PlayerMotor>(); rifle=FindFirstObjectByType<Rifle>(); extraction=FindFirstObjectByType<ExtractionZone>();
+            exits=FindObjectsByType<ExtractionZone>(FindObjectsSortMode.None);
             if(Player)
             {
                 health=100;
@@ -78,6 +90,7 @@ namespace TwinkleOps
         void Update()
         {
             if(!Player || Session==null || !Session.InRaid || loading) return;
+            foreach(var exit in exits)if(exit && (!extraction || (exit.transform.position-Player.transform.position).sqrMagnitude<(extraction.transform.position-Player.transform.position).sqrMagnitude))extraction=exit;
             if(Player.BagPressed) { bagOpen=!bagOpen; container=null; SetInput(!bagOpen&&!paused); }
             if(!Player.InputEnabled && !bagOpen && !paused) { paused=true; SetInput(false); }
             if(!Player.InputEnabled) { interactionHint=""; return; }
@@ -133,8 +146,8 @@ namespace TwinkleOps
             int y=263; foreach(var m in missing) { GUI.Label(new Rect(60,y,570,30),"· "+m); y+=30; }
             if(CanDeploy)
             {
-                GUI.Label(new Rect(60,270,540,55),"携带装备   M4A1 / AKM · 各 30 + 120 发");
-                GUI.Label(new Rect(60,328,550,65),"探索 10 个物资箱，收集六档品质战利品。\n前往北侧绿色撤离区，坚守 8 秒。");
+                GUI.Label(new Rect(60,270,540,55),"携带装备   M4A1 / AKM / M9 / M870");
+                GUI.Label(new Rect(60,328,550,65),"探索工地、临时医疗站、仓储区与地下车库。\n搜索不同容器；使用药品；选择绿色撤离点。");
                 GUI.Label(new Rect(60,420,550,75),"成功撤离：战利品进入仓库。\n行动失败或中途退出：失去本局物资。");
                 GUI.color=new Color(.6f,.68f,.7f); GUI.Label(new Rect(60,524,560,50),"首次进入需载入场景。PC 推荐键鼠与全屏。\n当前为单人早期试玩，武器动作仍在打磨。"); GUI.color=Color.white;
             }
@@ -156,8 +169,8 @@ namespace TwinkleOps
         void RaidHUD()
         {
             GUI.Label(new Rect(28,25,600,35),"生命 "+Mathf.CeilToInt(health)+"  |  背包 ¥"+Session.Bag.TotalValue.ToString("N0"));
-            if(rifle) GUI.Label(new Rect(980,650,270,35),rifle.Reloading?"换弹中…":rifle.WeaponName+"  "+rifle.ammo+" / "+rifle.reserve);
-            GUI.Label(new Rect(28,670,940,30),"WASD 移动 / 右键瞄准 / R 换弹 / E 搜索 / Tab 背包 / 1·2·Q 切枪 / Esc 菜单");
+            if(rifle) GUI.Label(new Rect(980,650,270,35),rifle.Reloading?"换弹中…":rifle.IsMelee?"M9 匕首 · 近战":rifle.WeaponName+"  "+rifle.ammo+" / "+rifle.reserve);
+            GUI.Label(new Rect(28,670,940,30),"WASD 移动 / 右键瞄准 / R 换弹 / E 搜索 / Tab 背包 / 1–4 切枪 / V 匕首 / F3 调试");
             if(searchingContainer) GUI.Label(new Rect(520,410,500,40),"搜索中 "+searching.ToString("F1")+" / "+searchingContainer.searchSeconds+" 秒");
             if(extraction && extraction.Remaining<extraction.seconds) GUI.Label(new Rect(495,120,600,40),"撤离倒计时 "+extraction.Remaining.ToString("F1")+" 秒 · 离开区域会重置");
             GUI.Label(new Rect(30,75,1180,45),notice);
@@ -166,7 +179,7 @@ namespace TwinkleOps
             {
                 var d=extraction.transform.position-Player.transform.position; float angle=Vector3.SignedAngle(Player.transform.forward,d,Vector3.up);
                 string arrow=Mathf.Abs(angle)<18?"↑":angle>0?"→":"←";
-                GUI.color=new Color(.4f,.95f,.75f); GUI.Label(new Rect(930,28,320,35),arrow+" 北侧撤离  "+d.magnitude.ToString("F0")+" m"); GUI.color=Color.white;
+                GUI.color=new Color(.4f,.95f,.75f); GUI.Label(new Rect(900,28,360,35),arrow+" "+extraction.displayName+"  "+d.magnitude.ToString("F0")+" m"); GUI.color=Color.white;
             }
             if(!bagOpen && !paused && rifle)
             {
@@ -200,8 +213,14 @@ namespace TwinkleOps
             lootScroll=GUI.BeginScrollView(new Rect(590,215,490,335),lootScroll,new Rect(0,0,465,Mathf.Max(325,count*55)));
             for(int i=0;i<count;i++)
             {
-                var item=Items.Get(rows!=null?rows[i]:Session.Bag.Entries[i].itemId); ItemLabel(item,new Rect(5,i*55,345,48));
-                if(GUI.Button(new Rect(353,i*55,105,44),rows!=null?"拾取":"丢弃"))
+                var item=Items.Get(rows!=null?rows[i]:Session.Bag.Entries[i].itemId); ItemLabel(item,new Rect(5,i*55,260,48));
+                if(rows==null && (item.id=="bandage" || item.id=="medicine"))
+                {
+                    GUI.enabled=health<100;
+                    if(GUI.Button(new Rect(270,i*55,85,44),"使用")) { UseMedicine(Session.Bag.Entries[i].instanceId);GUI.enabled=true;break; }
+                    GUI.enabled=true;
+                }
+                if(GUI.Button(new Rect(363,i*55,95,44),rows!=null?"拾取":"丢弃"))
                 { if(rows!=null) { if(!container.Take(i,Session.Bag)) notice="背包空间不足"; } else Drop(Session.Bag.Entries[i]); break; }
             }
             GUI.EndScrollView();
