@@ -10,11 +10,17 @@ namespace TwinkleOps
         public string displayName="搜索物资箱";
         public float searchSeconds=2;
         public List<string> Contents { get; private set; }
+        public int RevealedCount {get;private set;}
+        public float SearchProgress {get;private set;}
+        public float ItemSearchSeconds=>Contents==null||RevealedCount>=Contents.Count?0:.65f+(int)Items.Get(Contents[RevealedCount]).rarity*.42f;
+        public bool IsKnown(int index)=>Contents!=null&&index>=0&&index<RevealedCount;
+        public bool TickSearch(float delta)
+        {if(Contents==null||RevealedCount>=Contents.Count||delta<=0)return false;SearchProgress+=delta;if(SearchProgress<ItemSearchSeconds)return false;SearchProgress=0;RevealedCount++;return true;}
         public void Reveal() { Contents ??= ContainerLoot.Roll(kind,new System.Random(System.Guid.NewGuid().GetHashCode())); }
         public bool Take(int index,Inventory bag)
         {
-            if(Contents==null || index<0 || index>=Contents.Count || !bag.Add(Contents[index])) return false;
-            Contents.RemoveAt(index); return true;
+            if(Contents==null || index<0 || index>=Contents.Count || !IsKnown(index) || !bag.Add(Contents[index])) return false;
+            Contents.RemoveAt(index);RevealedCount--; return true;
         }
     }
     public static class ContainerLoot
@@ -35,4 +41,3 @@ namespace TwinkleOps
         }
     }
 }
-

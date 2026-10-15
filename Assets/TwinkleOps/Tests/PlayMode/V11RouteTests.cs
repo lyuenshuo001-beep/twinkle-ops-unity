@@ -22,6 +22,7 @@ namespace TwinkleOps.Tests
             var targets=new[]{new Vector3(52,0,15),new Vector3(0,0,79),new Vector3(-63,-4,6)}.ToList();
             var upper=GameObject.Find("Clinic upper floor waypoint");Assert.NotNull(upper);Assert.Greater(upper.transform.position.y,6);targets.Add(upper.transform.position);
             Assert.AreEqual(4,targets.Count,"Clinic must have a reachable upper floor via stairs");
+            var newRoutes=Object.FindObjectsByType<Transform>(FindObjectsSortMode.None).Where(t=>t.name.StartsWith("V12 route")).ToArray();Assert.GreaterOrEqual(newRoutes.Length,6);targets.AddRange(newRoutes.Select(t=>t.position));
             foreach(var target in targets)
             {
                 controller.enabled=false;p.transform.position=origin;controller.enabled=true;

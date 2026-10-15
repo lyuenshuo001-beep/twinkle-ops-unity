@@ -1,0 +1,11 @@
+using System.IO;using UnityEditor;using UnityEditor.SceneManagement;using UnityEngine;using UnityEngine.Rendering;
+namespace TwinkleOps.Editor {
+public static class V12EffectsSetup {
+ const string Root="Assets/TwinkleOps/Content/V12";
+ public static void Apply(){EditorSceneManager.OpenScene("Assets/TwinkleOps/Scenes/InfectionZone.unity");
+  Material Create(string name,bool mark){var tex=new Texture2D(64,64,TextureFormat.RGBA32,false);for(int y=0;y<64;y++)for(int x=0;x<64;x++){float d=Vector2.Distance(new Vector2(x,y),new Vector2(31.5f,31.5f))/32;float noise=.72f+.28f*Mathf.PerlinNoise(x*.4f,y*.4f);float alpha=Mathf.Clamp01(1-d)*(mark?Mathf.Clamp01((1-d)*3):.6f)*noise;tex.SetPixel(x,y,new Color(1,1,1,alpha));}tex.Apply();string p=Root+"/"+name+".png";File.WriteAllBytes(p,tex.EncodeToPNG());Object.DestroyImmediate(tex);AssetDatabase.ImportAsset(p);var ti=(TextureImporter)AssetImporter.GetAtPath(p);ti.alphaIsTransparency=true;ti.mipmapEnabled=true;ti.SaveAndReimport();var mat=new Material(Shader.Find(mark?"Universal Render Pipeline/Unlit":"Universal Render Pipeline/Particles/Unlit"));mat.SetTexture("_BaseMap",AssetDatabase.LoadAssetAtPath<Texture2D>(p));mat.SetFloat("_Surface",1);mat.SetFloat("_Blend",0);mat.SetFloat("_SrcBlend",(float)BlendMode.SrcAlpha);mat.SetFloat("_DstBlend",(float)BlendMode.OneMinusSrcAlpha);mat.SetFloat("_ZWrite",0);mat.SetFloat("_Cull",0);mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");mat.renderQueue=3000;AssetDatabase.CreateAsset(mat,Root+"/"+name+".mat");return mat;}
+  var player=Object.FindFirstObjectByType<PlayerMotor>();var obj=GameObject.Find("Combat feedback pool")??new GameObject("Combat feedback pool");var fx=obj.GetComponent<CombatEffects>();if(!fx)fx=obj.AddComponent<CombatEffects>();fx.dustMaterial=Create("Impact dust",false);fx.decalMaterial=Create("Impact mark",true);
+  var rifle=player.GetComponent<Rifle>();foreach(var weapon in rifle.weapons){var flash=weapon.model.GetComponentInChildren<ParticleSystem>(true);if(!flash)continue;var main=flash.main;main.startLifetime=.045f;main.startSize=weapon.name=="M870"?.2f:.14f;main.startColor=new Color(1,.7f,.3f,.9f);}
+  EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());AssetDatabase.SaveAssets();Debug.Log("V12_EFFECTS_READY");
+ }
+}}

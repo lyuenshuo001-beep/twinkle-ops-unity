@@ -173,7 +173,7 @@ namespace TwinkleOps.Editor
             Directory.CreateDirectory(folder+"/ThirdPartyNotices");
             File.Copy(Root+"/UI/OFL.txt",folder+"/ThirdPartyNotices/NotoSansSC-OFL.txt",true);
             File.Copy("Docs/CREDITS.md",folder+"/ThirdPartyNotices/CREDITS.md",true);
-            File.WriteAllText(folder+"/BUILD-STATUS.txt",foundation?"ENGINEERING VALIDATION ONLY. Lobby shell; art assets and playable raid are not included. Not a completed game.":"V1.1 early playable build. See Docs/V1.1-QA.md for verified behavior and remaining art/animation limitations.");
+            File.WriteAllText(folder+"/BUILD-STATUS.txt",foundation?"ENGINEERING VALIDATION ONLY. Lobby shell; art assets and playable raid are not included. Not a completed game.":"V1.2 early playable build. See Docs/V1.2-QA.md for verified behavior and remaining art/animation limitations.");
             Debug.Log("TWINKLE_OPS_BUILD_OK: "+platform+" foundation="+foundation);
         }
         [Serializable] sealed class BuildRecord { public string result; public ulong bytes; public double seconds; public bool foundation; }

@@ -1,0 +1,128 @@
+[
+  {
+    "asset": "modular_factory_facade",
+    "license": "CC0",
+    "source": "https://polyhaven.com/a/modular_factory_facade",
+    "authors": {
+      "James Ray Cock": "All"
+    },
+    "files": [
+      {
+        "file": "factory.fbx",
+        "sha256": "648ef0405c670dc5b2777907bfaa284223a351d268d0b9f227f4be7f2e476f2f"
+      },
+      {
+        "file": "brick_rough.jpg",
+        "sha256": "0728bcb4d5efd7183ae12e1995199b8ae48df96a240d1c1bb3b221657276715b"
+      },
+      {
+        "file": "windows_nor_gl.jpg",
+        "sha256": "4dc9e4a6b97d5384849faeebca87eae9f6736664971c6c10a41fc19bd01fc106"
+      },
+      {
+        "file": "trim_01_nor_gl.jpg",
+        "sha256": "05441cf545c9d5f6786cd191e9b3b627668b1176e155d1fae7fbe28f6a8d3802"
+      },
+      {
+        "file": "garage_metal.jpg",
+        "sha256": "a1cf852a88dee23f572ac0cf3ec40da808f0de42d98d3fd5f5507f2220de3c08"
+      },
+      {
+        "file": "brick_nor_gl.jpg",
+        "sha256": "1168796e949c5ce3957142e86bce1d09531466aaea90dc46cbc3f3225cbdd78e"
+      },
+      {
+        "file": "doors_diff.jpg",
+        "sha256": "157b59b9d1c929e51e2747f4f9481389743acba539308cecbb98c17294b6c7e1"
+      },
+      {
+        "file": "doors_metal.jpg",
+        "sha256": "c7a3b005b0406249e407f898463c9a3a0238d23e17669e42b981782d1487aece"
+      },
+      {
+        "file": "garage_diff.jpg",
+        "sha256": "d1cf6239c7364900b02279600937a4c9bf0a21d315efabf18f16d5637020e39f"
+      },
+      {
+        "file": "doors_rough.jpg",
+        "sha256": "68b0c33bfb8611d9cacff2db396095c9a8cad0c823e5d721c43bfccff64e1a34"
+      },
+      {
+        "file": "garage_nor_gl.jpg",
+        "sha256": "e8ac6265622fb8c8df454ae02a75746bc37ded0d4533dbe65fa275d0e40f28ba"
+      },
+      {
+        "file": "garage_rough.jpg",
+        "sha256": "a039127056855251a4a32e7a6f15e81bfb826b622bdbb0e0fec73032cb75bc6d"
+      },
+      {
+        "file": "windows_rough.jpg",
+        "sha256": "b0a546349456e4dda8a0e345c6499ad53ad14b19343fa276ef4f7dfdca69e382"
+      },
+      {
+        "file": "trim_01_rough.jpg",
+        "sha256": "19cbd4ed0da581b2dc062002d39c6cb41613f5690427d1b1b16beed606e015ec"
+      },
+      {
+        "file": "doors_nor_gl.jpg",
+        "sha256": "1e3bdff6d4b30cb26e901d6d14e42d398aeacfb46767900404eb38ec5ba016dc"
+      },
+      {
+        "file": "brick_diff.jpg",
+        "sha256": "852b01c61efc07fd8e60e59767657ef51112bf65f5eaf184f02c27ea5170582d"
+      },
+      {
+        "file": "windows_diff.jpg",
+        "sha256": "d361dacbd23095dacf1d82eb5a509a305c44b007f8adfb221dc2e5efe56180e0"
+      },
+      {
+        "file": "trim_01_diff.jpg",
+        "sha256": "beff49832938c5493a4b5bbb82eeabd138c29c6523e5228e006f702859bbc87f"
+      }
+    ]
+  },
+  {
+    "asset": "plastered_wall_02",
+    "license": "CC0",
+    "source": "https://polyhaven.com/a/plastered_wall_02",
+    "authors": {
+      "Charlotte Baglioni": "All"
+    },
+    "files": [
+      {
+        "file": "diff.jpg",
+        "sha256": "0a316ffd3f953a902325c06afb5a5863bbf71d13a353f9d85378562adca79603"
+      },
+      {
+        "file": "nor_gl.jpg",
+        "sha256": "0f1b4ea0c4707ea133f133c020923bddd8610a43a153281dad15d49f39ad9624"
+      },
+      {
+        "file": "rough.jpg",
+        "sha256": "6c317c0e647b02259601690bd33501bbc825858c6d1715cd0f8f46a5b51f6db4"
+      }
+    ]
+  },
+  {
+    "asset": "concrete_floor",
+    "license": "CC0",
+    "source": "https://polyhaven.com/a/concrete_floor",
+    "authors": {
+      "eye-candy.xyz": "All"
+    },
+    "files": [
+      {
+        "file": "diff.jpg",
+        "sha256": "5e06d0fb226f671470f59bf7798954b6965c9ed56dd45084dfd012e15737e444"
+      },
+      {
+        "file": "nor_gl.jpg",
+        "sha256": "5a403c176361193b785198ab363d3dc3755773ca5b023f19e05874e50caea302"
+      },
+      {
+        "file": "rough.jpg",
+        "sha256": "342110e685c07af2c56194662a796b2ab4f2a4d992a9745b8fc55943414faead"
+      }
+    ]
+  }
+]

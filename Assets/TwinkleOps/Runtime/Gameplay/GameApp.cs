@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace TwinkleOps
 {
-    public sealed class GameApp : MonoBehaviour
+    public sealed partial class GameApp : MonoBehaviour
     {
         public static GameApp Instance { get; private set; }
         public static Func<IProgressStore> ProgressStoreFactory;
@@ -17,6 +17,7 @@ namespace TwinkleOps
         public PlayerMotor Player { get; private set; }
         Rifle rifle;
         float health=100, searching;
+        public float RaidStartedAt {get;private set;}
         public float Health => health;
         public bool UseMedicine(string instanceId)
         {
@@ -43,14 +44,14 @@ namespace TwinkleOps
             SceneManager.sceneLoaded+=Loaded;
             Debug.Log("TWINKLE_OPS_BOOT_OK");
         }
-        void OnDestroy() { if(Instance==this) { SceneManager.sceneLoaded-=Loaded; Instance=null; } }
+        void OnDestroy() { if(revealClips!=null)foreach(var clip in revealClips)if(clip)Destroy(clip);if(Instance==this) { SceneManager.sceneLoaded-=Loaded; Instance=null; } }
         void Loaded(Scene scene,LoadSceneMode mode)
         {
             loading=false; Player=FindFirstObjectByType<PlayerMotor>(); rifle=FindFirstObjectByType<Rifle>(); extraction=FindFirstObjectByType<ExtractionZone>();
             exits=FindObjectsByType<ExtractionZone>(FindObjectsSortMode.None);
             if(Player)
             {
-                health=100;
+                health=100;RaidStartedAt=Time.time;
                 foreach(var z in FindObjectsByType<Infected>(FindObjectsSortMode.None)) z.target=Player.transform;
                 SetInput(true);
                 Debug.Log("TWINKLE_OPS_RAID_READY");
@@ -74,12 +75,12 @@ namespace TwinkleOps
         {
             if(loading || Session==null || !Session.InRaid) return;
             health=Mathf.Max(0,health-amount); if(health>0) return;
-            try { Session.Die(); Return("行动失败。本局物资已遗失，仓库物资保留。"); } catch(Exception e) { notice=e.Message; }
+            try { Session.Die(); Return("行动失败。普通背包已遗失，安全箱内容已送回仓库。"); } catch(Exception e) { notice=e.Message; }
         }
         public void Extract()
         {
             if(loading) return;
-            try { int value=Session.Bag.TotalValue; if(Session.Extract()) Return("撤离成功，战利品价值 ¥"+value.ToString("N0")+"，已保存至仓库。"); }
+            try { int value=Session.Bag.TotalValue+Session.Safe.TotalValue; if(Session.Extract()) Return("撤离成功，战利品价值 ¥"+value.ToString("N0")+"，已保存至仓库。"); }
             catch(Exception e) { notice="保存失败，仍保留本局物资："+e.Message; }
         }
         void Return(string text)
@@ -93,24 +94,19 @@ namespace TwinkleOps
             foreach(var exit in exits)if(exit && (!extraction || (exit.transform.position-Player.transform.position).sqrMagnitude<(extraction.transform.position-Player.transform.position).sqrMagnitude))extraction=exit;
             if(Player.BagPressed) { bagOpen=!bagOpen; container=null; SetInput(!bagOpen&&!paused); }
             if(!Player.InputEnabled && !bagOpen && !paused) { paused=true; SetInput(false); }
+            if(bagOpen && container)
+            {
+                if(Vector3.Distance(Player.transform.position,container.transform.position)>4.3f)CloseInventory();
+                else if(container.TickSearch(Time.deltaTime)){var item=Items.Get(container.Contents[container.RevealedCount-1]);PlayReveal(item.rarity);if(item.rarity>=Rarity.Purple){rareUntil=Time.time+2;rareItem=item.name;}}
+            }
             if(!Player.InputEnabled) { interactionHint=""; return; }
             var ray=new Ray(Player.view.transform.position,Player.view.transform.forward);
             bool hit=Physics.Raycast(ray,out var info,2.8f,~(1<<8),QueryTriggerInteraction.Ignore);
             var aimed=hit?info.collider.GetComponentInParent<LootContainer>():null;
             interactionHint=aimed?"[ E ] 搜索 "+aimed.displayName:hit&&info.collider.GetComponentInParent<DroppedItem>()?"[ E ] 拾取掉落物资":"";
-            if(searchingContainer)
-            {
-                if(aimed!=searchingContainer) { searchingContainer=null; searching=0; }
-                else
-                {
-                    searching+=Time.deltaTime;
-                    if(searching>=searchingContainer.searchSeconds)
-                    { container=searchingContainer; container.Reveal(); searchingContainer=null; bagOpen=true; SetInput(false); }
-                }
-            }
             if(Player.InteractPressed && hit)
             {
-                if(aimed) { searchingContainer=aimed; searching=0; }
+                if(aimed) OpenContainer(aimed);
                 else { var drop=info.collider.GetComponentInParent<DroppedItem>(); if(drop && !drop.Take(Session.Bag)) notice="背包空间不足"; }
             }
         }
@@ -139,7 +135,7 @@ namespace TwinkleOps
             GUI.backgroundColor=new Color(.075f,.13f,.15f,.94f);
             GUI.Box(new Rect(24,24,1232,672),"");
             GUI.skin.label.fontSize=38; GUI.Label(new Rect(60,48,1000,64),"闪烁行动   /   TWINKLE OPS"); GUI.skin.label.fontSize=18;
-            GUI.color=new Color(.55f,.78f,.78f); GUI.Label(new Rect(60,119,1080,34),CanDeploy?"隔离区 01 · 废弃工地    /    搜索 · 生存 · 撤离":"第一阶段开发中 · 战局等待验证"); GUI.color=Color.white;
+            GUI.color=new Color(.55f,.78f,.78f); GUI.Label(new Rect(60,119,1080,34),CanDeploy?"隔离区 01 · 联通工业园    /    搜索 · 生存 · 撤离":"第一阶段开发中 · 战局等待验证"); GUI.color=Color.white;
             GUI.Label(new Rect(60,146,1110,60),string.IsNullOrEmpty(fatal)?notice:fatal);
             var missing=content?content.Missing():new System.Collections.Generic.List<string>{"资源清单"};
             GUI.Label(new Rect(60,218,550,40),CanDeploy?"感染区已就绪":"等待资源导入与场景验收");
@@ -148,18 +144,27 @@ namespace TwinkleOps
             {
                 GUI.Label(new Rect(60,270,540,55),"携带装备   M4A1 / AKM / M9 / M870");
                 GUI.Label(new Rect(60,328,550,65),"探索工地、临时医疗站、仓储区与地下车库。\n搜索不同容器；使用药品；选择绿色撤离点。");
-                GUI.Label(new Rect(60,420,550,75),"成功撤离：战利品进入仓库。\n行动失败或中途退出：失去本局物资。");
-                GUI.color=new Color(.6f,.68f,.7f); GUI.Label(new Rect(60,524,560,50),"首次进入需载入场景。PC 推荐键鼠与全屏。\n当前为单人早期试玩，武器动作仍在打磨。"); GUI.color=Color.white;
+                GUI.Label(new Rect(60,409,550,28),"补给站 · 买入价格为回收价的两倍");
+                if(GUI.Button(new Rect(60,445,235,42),"绷带 ¥240"))Do(()=>Session.BuyMedicine("bandage"));
+                if(GUI.Button(new Rect(310,445,235,42),"急救药品 ¥2,200"))Do(()=>Session.BuyMedicine("medicine"));
+                GUI.Label(new Rect(60,497,550,28),"待带入物资："+Session.Progress.prepared.Count+" 件 · 死亡会失去");
+                if(GUI.Button(new Rect(60,535,235,40),"退回整备物资"))Do(()=>{Session.UnpackAll();return true;});
+                if(GUI.Button(new Rect(310,535,235,40),"开镜："+(PlayerPrefs.GetInt("TwinkleOps.controls.toggleAds",1)==1?"点击切换":"按住"))){PlayerPrefs.SetInt("TwinkleOps.controls.toggleAds",PlayerPrefs.GetInt("TwinkleOps.controls.toggleAds",1)==1?0:1);PlayerPrefs.Save();}
+
             }
             GUI.enabled=CanDeploy && !loading;
             if(GUI.Button(new Rect(60,602,510,54),"进入感染区")) Begin(); GUI.enabled=true;
             GUI.Label(new Rect(680,218,500,30),"仓库   /   STASH");
             if(Session==null) return;
-            GUI.Label(new Rect(680,253,500,30),"成功撤离 "+Session.Progress.successfulRaids+"    失败 "+Session.Progress.deaths);
-            stashScroll=GUI.BeginScrollView(new Rect(670,300,510,340),stashScroll,new Rect(0,0,480,Mathf.Max(330,Session.Progress.stash.Count*34)));
-            for(int i=0;i<Session.Progress.stash.Count;i++) ItemLabel(Items.Get(Session.Progress.stash[i]),new Rect(10,i*34,470,30));
-            if(Session.Progress.stash.Count==0) GUI.Label(new Rect(10,0,470,50),"仓库为空。撤离后的战利品将在这里保存。");
-            GUI.EndScrollView();
+            GUI.Label(new Rect(680,251,500,30),"余额 ¥"+Session.Progress.credits.ToString("N0")+" · 带回 ¥"+Session.Progress.lastRaidValue.ToString("N0"));
+            GUI.Label(new Rect(680,282,500,30),"撤离 "+Session.Progress.successfulRaids+" / 失败 "+Session.Progress.deaths+" · 损失 ¥"+Session.Progress.lastLostValue.ToString("N0"));
+            stashScroll=GUI.BeginScrollView(new Rect(670,320,550,285),stashScroll,new Rect(0,0,515,Mathf.Max(280,Session.Progress.stash.Count*78)));
+            for(int i=0;i<Session.Progress.stash.Count;i++){
+                var item=Items.Get(Session.Progress.stash[i]);DrawIcon(item,new Rect(5,i*78+6,55,55));GUI.color=RarityColors[(int)item.rarity];GUI.Label(new Rect(70,i*78,240,32),item.name);GUI.color=Color.white;GUI.Label(new Rect(70,i*78+32,235,30),"¥"+item.value.ToString("N0")+" / "+item.width+"×"+item.height);
+                int index=i;if(GUI.Button(new Rect(310,i*78+12,85,46),"出售")){Do(()=>Session.Sell(index));break;}if(GUI.Button(new Rect(405,i*78+12,85,46),"装包")){Do(()=>Session.Pack(index));break;}
+            }
+            if(Session.Progress.stash.Count==0)GUI.Label(new Rect(10,0,500,60),"仓库为空。搜索撤离，或从补给站购买药品。");GUI.EndScrollView();
+            if(GUI.Button(new Rect(680,621,510,38),"按价值整理仓库"))Do(()=>{Session.SortStash();return true;});
         }
         void ItemLabel(ItemSpec item,Rect rect)
         {
@@ -168,12 +173,13 @@ namespace TwinkleOps
         }
         void RaidHUD()
         {
-            GUI.Label(new Rect(28,25,600,35),"生命 "+Mathf.CeilToInt(health)+"  |  背包 ¥"+Session.Bag.TotalValue.ToString("N0"));
+            GUI.Label(new Rect(28,25,600,35),"生命 "+Mathf.CeilToInt(health)+"  |  ¥"+Session.Bag.TotalValue.ToString("N0")+"  |  "+Session.Bag.Weight.ToString("F1")+" kg");
             if(rifle) GUI.Label(new Rect(980,650,270,35),rifle.Reloading?"换弹中…":rifle.IsMelee?"M9 匕首 · 近战":rifle.WeaponName+"  "+rifle.ammo+" / "+rifle.reserve);
-            GUI.Label(new Rect(28,670,940,30),"WASD 移动 / 右键瞄准 / R 换弹 / E 搜索 / Tab 背包 / 1–4 切枪 / V 匕首 / F3 调试");
+            GUI.Label(new Rect(28,670,940,30),"WASD 移动 / 右键切换瞄准 / R 换弹 / E 搜索 / Tab 背包 / 1–4 切枪 / V 匕首 / F3 调试");
             if(searchingContainer) GUI.Label(new Rect(520,410,500,40),"搜索中 "+searching.ToString("F1")+" / "+searchingContainer.searchSeconds+" 秒");
             if(extraction && extraction.Remaining<extraction.seconds) GUI.Label(new Rect(495,120,600,40),"撤离倒计时 "+extraction.Remaining.ToString("F1")+" 秒 · 离开区域会重置");
             GUI.Label(new Rect(30,75,1180,45),notice);
+            if(extraction)GUI.Label(new Rect(900,65,350,35),extraction.Requirement(this));
             if(!bagOpen && !paused) GUI.Label(new Rect(430,435,610,35),interactionHint);
             if(extraction && Player)
             {
@@ -188,42 +194,8 @@ namespace TwinkleOps
                 GUI.DrawTexture(new Rect(640,360-gap-6,2,6),Texture2D.whiteTexture); GUI.DrawTexture(new Rect(640,360+gap,2,6),Texture2D.whiteTexture); GUI.color=Color.white;
             }
             if(paused)
-            { GUI.Box(new Rect(415,260,450,170),"菜单（战局继续运行）"); if(GUI.Button(new Rect(460,320,360,60),"返回行动")) { paused=false; SetInput(true); } }
+            { GUI.Box(new Rect(415,240,450,250),"菜单（战局继续运行）");if(GUI.Button(new Rect(460,300,360,55),"开镜模式："+(Player.ToggleAds?"点击切换":"按住")))Player.SetAdsMode(!Player.ToggleAds); if(GUI.Button(new Rect(460,385,360,60),"返回行动")) { paused=false; SetInput(true); } }
             if(bagOpen) InventoryUI();
-        }
-        void InventoryUI()
-        {
-            GUI.Box(new Rect(170,130,940,500),"背包 · 战局继续运行");
-            for(int y=0;y<Session.Bag.Rows;y++) for(int x=0;x<Session.Bag.Columns;x++) GUI.Box(new Rect(195+x*59,185+y*59,57,57),"");
-            foreach(var item in Session.Bag.Entries.ToArray())
-            {
-                var r=new Rect(195+item.x*59,185+item.y*59,item.Width*59-2,item.Height*59-2);
-                GUI.color=RarityColors[(int)item.Spec.rarity];
-                if(GUI.Button(r,item.Spec.name)) notice=item.Spec.name+" · ¥"+item.Spec.value+" · 点击下方列表可丢弃";
-                GUI.color=Color.white;
-                int iconIndex=Array.IndexOf(Items.All,item.Spec);
-                if(content.itemIcons!=null && iconIndex>=0 && iconIndex<content.itemIcons.Length && content.itemIcons[iconIndex])
-                { var icon=content.itemIcons[iconIndex]; var uv=icon.textureRect; uv=new Rect(uv.x/icon.texture.width,uv.y/icon.texture.height,uv.width/icon.texture.width,uv.height/icon.texture.height); GUI.DrawTextureWithTexCoords(new Rect(r.x+4,r.y+3,25,25),icon.texture,uv); }
-            }
-            if(GUI.Button(new Rect(195,500,165,45),"整理背包") && !Session.Bag.Sort()) notice="当前布局已保留，未找到更紧凑布局。";
-            if(GUI.Button(new Rect(375,500,165,45),"关闭")) { bagOpen=false; container=null; SetInput(!paused); }
-            var rows=container?container.Contents:null;
-            GUI.Label(new Rect(600,172,450,32),container?container.displayName:"携带物资 · 点击丢弃");
-            int count=rows?.Count ?? Session.Bag.Entries.Count;
-            lootScroll=GUI.BeginScrollView(new Rect(590,215,490,335),lootScroll,new Rect(0,0,465,Mathf.Max(325,count*55)));
-            for(int i=0;i<count;i++)
-            {
-                var item=Items.Get(rows!=null?rows[i]:Session.Bag.Entries[i].itemId); ItemLabel(item,new Rect(5,i*55,260,48));
-                if(rows==null && (item.id=="bandage" || item.id=="medicine"))
-                {
-                    GUI.enabled=health<100;
-                    if(GUI.Button(new Rect(270,i*55,85,44),"使用")) { UseMedicine(Session.Bag.Entries[i].instanceId);GUI.enabled=true;break; }
-                    GUI.enabled=true;
-                }
-                if(GUI.Button(new Rect(363,i*55,95,44),rows!=null?"拾取":"丢弃"))
-                { if(rows!=null) { if(!container.Take(i,Session.Bag)) notice="背包空间不足"; } else Drop(Session.Bag.Entries[i]); break; }
-            }
-            GUI.EndScrollView();
         }
     }
 }

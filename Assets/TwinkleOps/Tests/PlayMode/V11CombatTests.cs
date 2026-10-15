@@ -67,11 +67,13 @@ namespace TwinkleOps.Tests
             app.Session.Bag.Add("medicine");Assert.IsTrue(app.UseMedicine(app.Session.Bag.Entries.Last().instanceId));Assert.AreEqual(100,app.Health);
             app.Session.Bag.Add("bandage");Assert.IsFalse(app.UseMedicine(app.Session.Bag.Entries.Last().instanceId));
             z.ResetForSpawn(player.transform.position+Vector3.forward*1.25f,player.transform);z.enabled=false;z.GetComponent<NavMeshAgent>().isStopped=true;
+            foreach(var h in z.GetComponentsInChildren<InfectedHitbox>())h.GetComponent<Collider>().enabled=h.region==HitRegion.Body;
             player.enabled=false;player.view.transform.LookAt(z.animator.GetBoneTransform(HumanBodyBones.Chest).position);
             rifle.Equip(2);yield return new WaitForSeconds(.35f);
             Assert.IsTrue(rifle.TryFire());yield return new WaitForSeconds(.3f);Assert.Less(z.health,100,"Knife must deal physical contact damage");
             yield return new WaitForSeconds(.4f);player.view.transform.LookAt(z.animator.GetBoneTransform(HumanBodyBones.Chest).position);Assert.IsTrue(rifle.TryFire());yield return new WaitForSeconds(.3f);
             Assert.IsTrue(z.Dead,"Two body knife strikes must kill a normal infected");
+            var feedback=Object.FindAnyObjectByType<CombatEffects>();Assert.NotNull(feedback);Assert.GreaterOrEqual(feedback.Impacts,2,"Physical knife hits must dispatch impact feedback");
             Debug.Log("V11_COMBAT_TEST_OK");
         }
         [UnityTearDown] public IEnumerator Cleanup()

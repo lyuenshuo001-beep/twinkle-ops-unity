@@ -55,7 +55,7 @@ namespace TwinkleOps
             if(magazine) magazine.localPosition=magazinePosition;
             if(save) { weapons[ActiveWeapon].ammo=ammo; weapons[ActiveWeapon].reserve=reserve; }
             if(save && weaponRoot) { weaponRoot.localPosition=basePosition; weaponRoot.localRotation=baseRotation; }
-            ActiveWeapon=index; var slot=weapons[index];
+            motor.ResetAim();ActiveWeapon=index; var slot=weapons[index];
             foreach(var w in weapons) w.model.gameObject.SetActive(w==slot);
             weaponRoot=slot.model; shot=slot.shot; ammo=slot.ammo; reserve=slot.reserve;
             damage=slot.damage; roundsPerMinute=slot.rpm; recoilScale=slot.recoil; reloadSeconds=slot.reload;
@@ -103,6 +103,7 @@ namespace TwinkleOps
                 Vector3 direction=(cam.forward+cam.right*random.x+cam.up*random.y).normalized;
                 bool hit=CombatRay.Cast(cam.position,direction,weapons[ActiveWeapon].reach,out var info);
                 if(hit && CombatRay.Damage(info,damage))HitUntil=Time.time+.16f;
+                if(hit)CombatEffects.Hit(info,info.collider.GetComponent<InfectedHitbox>()!=null);
                 CombatDebug.Trace(cam.position,hit?info.point:cam.position+direction*weapons[ActiveWeapon].reach);
             }
             motor.AddRecoil((motor.AimHeld?.65f:1.2f)*recoilScale);
@@ -118,7 +119,7 @@ namespace TwinkleOps
             {
                 if(!hit.collider.GetComponent<InfectedHitbox>())break;
                 if(Physics.Linecast(cam.position,hit.point,CombatRay.EnvironmentMask,QueryTriggerInteraction.Ignore))break;
-                if(CombatRay.Damage(hit,damage)) { HitUntil=Time.time+.22f;CombatDebug.Trace(cam.position,hit.point);break; }
+                if(CombatRay.Damage(hit,damage)) { HitUntil=Time.time+.22f;CombatEffects.Hit(hit,true);CombatDebug.Trace(cam.position,hit.point);break; }
             }
         }
         IEnumerator Reload()

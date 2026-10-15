@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine.SceneManagement;
@@ -64,11 +65,11 @@ namespace TwinkleOps.Tests
             if(!target.Dead){player.view.transform.LookAt(head.position);Assert.IsTrue(rifle.TryFire());}
             Assert.LessOrEqual(target.health,0,"Real head hitscan must kill the infected");player.enabled=true;
             Assert.IsNotNull(rifle.muzzleFlash,"Weapon must include a muzzle effect");
-            boxes[0].Reveal(); Assert.Greater(boxes[0].Contents.Count,0); Assert.IsTrue(boxes[0].Take(0,app.Session.Bag));
+            boxes[0].Reveal();Assert.IsFalse(boxes[0].Take(0,app.Session.Bag));boxes[0].TickSearch(10); Assert.Greater(boxes[0].Contents.Count,0); Assert.IsTrue(boxes[0].Take(0,app.Session.Bag));
             int value=app.Session.Bag.TotalValue; Assert.Greater(value,0);
             Call(app,"Drop",app.Session.Bag.Entries[0]); Assert.AreEqual(0,app.Session.Bag.Entries.Count);
             var dropped=Object.FindFirstObjectByType<DroppedItem>(); Assert.NotNull(dropped); Assert.IsTrue(dropped.Take(app.Session.Bag)); Assert.AreEqual(value,app.Session.Bag.TotalValue);
-            var zone=Object.FindFirstObjectByType<ExtractionZone>(); var cc=player.GetComponent<CharacterController>(); cc.enabled=false; player.transform.position=zone.transform.position; cc.enabled=true;
+            var zone=Object.FindObjectsByType<ExtractionZone>(FindObjectsSortMode.None).First(z=>z.condition==ExtractionCondition.None); var cc=player.GetComponent<CharacterController>(); cc.enabled=false; player.transform.position=zone.transform.position; cc.enabled=true;
             yield return new WaitForSeconds(8.5f);
             Assert.IsNull(app.Player,"Extraction must return to lobby"); Assert.AreEqual(1,app.Session.Progress.successfulRaids); Assert.AreEqual(1,app.Session.Progress.stash.Count);
             var saved=new PlayerPrefsStore(Prefix).Load(); Assert.AreEqual(1,saved.successfulRaids); Assert.AreEqual(1,saved.stash.Count);

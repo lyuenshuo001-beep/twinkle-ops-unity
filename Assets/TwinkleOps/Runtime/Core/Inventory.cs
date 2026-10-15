@@ -12,6 +12,7 @@ namespace TwinkleOps
         public string id, name;
         public Rarity rarity;
         public int value, width = 1, height = 1;
+        public float Weight => id=="gold"?2:id=="tools"?2.4f:id=="sensor"?1.8f:id=="core"?2.1f:id=="radio"?1.2f:id=="medicine"?.6f:.25f;
         public ItemSpec(string id, string name, Rarity rarity, int value, int width = 1, int height = 1)
         { this.id=id; this.name=name; this.rarity=rarity; this.value=value; this.width=width; this.height=height; }
     }
@@ -49,6 +50,9 @@ namespace TwinkleOps
         public int Rows { get; }
         public IReadOnlyList<PlacedItem> Entries => entries;
         public int TotalValue => entries.Sum(x => x.Spec.value);
+        public float Weight => entries.Sum(x=>x.Spec.Weight);
+        public bool AddAt(string itemId,string instanceId,int x,int y,bool rotated)
+        { var item=new PlacedItem{itemId=itemId,instanceId=instanceId??Guid.NewGuid().ToString("N"),x=x,y=y,rotated=rotated};if(entries.Any(e=>e.instanceId==item.instanceId)||!Fits(item,x,y,rotated))return false;entries.Add(item);return true; }
         public Inventory(int columns = 6, int rows = 5) { Columns=columns; Rows=rows; }
         public bool Fits(PlacedItem item, int x, int y, bool rotated)
         {

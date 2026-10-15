@@ -14,9 +14,12 @@ namespace TwinkleOps
         public int WeaponSelected=-1;
         CharacterController controller;
         float pitch, vertical;
-        bool useTouch;
+        bool useTouch,aimLatched;
+        public bool ToggleAds {get;private set;}
+        public void SetAdsMode(bool toggle){ToggleAds=toggle;aimLatched=false;AimHeld=false;PlayerPrefs.SetInt("TwinkleOps.controls.toggleAds",toggle?1:0);PlayerPrefs.Save();}
+        public void ResetAim(){aimLatched=false;AimHeld=false;}
         readonly MobileInput touch=new();
-        void Awake() { controller=GetComponent<CharacterController>(); useTouch=Application.isMobilePlatform; }
+        void Awake() { controller=GetComponent<CharacterController>(); useTouch=Application.isMobilePlatform;ToggleAds=PlayerPrefs.GetInt("TwinkleOps.controls.toggleAds",1)==1; }
         public void AddRecoil(float amount) { pitch=Mathf.Clamp(pitch-amount,-85,85); }
         void Update()
         {
@@ -25,9 +28,9 @@ namespace TwinkleOps
             BagPressed=key?.tabKey.wasPressedThisFrame==true;
             if(Touchscreen.current!=null && Touchscreen.current.primaryTouch.press.isPressed) useTouch=true;
             touch.Read(); BagPressed |= touch.bag;
-            if(!InputEnabled) { MoveInput=Vector2.zero; return; }
+            if(!InputEnabled) { MoveInput=Vector2.zero;ResetAim(); return; }
             if(key?.escapeKey.wasPressedThisFrame==true) { InputEnabled=false; return; }
-            Vector2 move=Vector2.zero, look=Vector2.zero;
+            Vector2 move=Vector2.zero, look=Vector2.zero;bool aimPressed=false;
             if(key!=null)
             {
                 move=new Vector2((key.dKey.isPressed?1:0)-(key.aKey.isPressed?1:0),(key.wKey.isPressed?1:0)-(key.sKey.isPressed?1:0));
@@ -39,15 +42,17 @@ namespace TwinkleOps
                 if(key.digit4Key.wasPressedThisFrame) WeaponSelected=3;
             }
             if(mouse!=null && Cursor.lockState==CursorLockMode.Locked)
-            { look=mouse.delta.ReadValue()*sensitivity; FireHeld=mouse.leftButton.isPressed;FirePressed=mouse.leftButton.wasPressedThisFrame; AimHeld=mouse.rightButton.isPressed; }
+            { look=mouse.delta.ReadValue()*sensitivity; FireHeld=mouse.leftButton.isPressed;FirePressed=mouse.leftButton.wasPressedThisFrame; AimHeld=mouse.rightButton.isPressed;aimPressed=mouse.rightButton.wasPressedThisFrame; }
             if(Touchscreen.current!=null)
-            { move+=touch.move; look+=touch.look*.13f; FireHeld|=touch.fire;FirePressed|=touch.firePressed; AimHeld|=touch.aim; ReloadPressed|=touch.reload; InteractPressed|=touch.interact; SwitchPressed|=touch.switchWeapon; if(touch.knife)WeaponSelected=2; }
+            { move+=touch.move; look+=touch.look*.13f; FireHeld|=touch.fire;FirePressed|=touch.firePressed; AimHeld|=touch.aim;aimPressed|=touch.aimPressed; ReloadPressed|=touch.reload; InteractPressed|=touch.interact; SwitchPressed|=touch.switchWeapon; if(touch.knife)WeaponSelected=2; }
+            if(ToggleAds){if(aimPressed){aimLatched=!aimLatched;Debug.Log("TWINKLE_OPS_ADS_TOGGLE:"+(aimLatched?"on":"off"));}AimHeld=aimLatched;}
             MoveInput=Vector2.ClampMagnitude(move,1);
             transform.Rotate(Vector3.up*look.x); pitch=Mathf.Clamp(pitch-look.y,-85,85); view.transform.localEulerAngles=new(pitch,0,0);
             if(controller.isGrounded && vertical<0) vertical=-2;
             if(controller.isGrounded && key?.spaceKey.wasPressedThisFrame==true) vertical=5;
             vertical-=18*Time.deltaTime;
             float speed=key?.leftShiftKey.isPressed==true && !AimHeld?sprintSpeed:walkSpeed;
+            float weight=GameApp.Instance?.Session?.Bag.Weight??0;speed*=Mathf.Clamp(1-Mathf.Max(0,weight-14)*.025f,.65f,1);
             controller.Move((transform.TransformDirection(new Vector3(MoveInput.x,0,MoveInput.y))*speed+Vector3.up*vertical)*Time.deltaTime);
         }
         public void DrawTouch() { if(useTouch && Touchscreen.current!=null && InputEnabled) touch.Draw(); }
@@ -57,7 +62,7 @@ namespace TwinkleOps
     sealed class MobileInput
     {
         public Vector2 move,look;
-        public bool fire,firePressed,aim,reload,interact,bag,switchWeapon,knife;
+        public bool fire,firePressed,aim,aimPressed,reload,interact,bag,switchWeapon,knife;
         int moveId=-1,lookId=-1;
         Vector2 origin;
         static Rect Fire=>new(.84f,.53f,.15f,.19f);
@@ -69,7 +74,7 @@ namespace TwinkleOps
         static Rect Knife=>new(.52f,.82f,.13f,.12f);
         public void Read()
         {
-            move=look=Vector2.zero; fire=firePressed=aim=reload=interact=bag=switchWeapon=knife=false;
+            move=look=Vector2.zero; fire=firePressed=aim=aimPressed=reload=interact=bag=switchWeapon=knife=false;
             if(Touchscreen.current==null) return;
             bool hasMove=false,hasLook=false;
             foreach(var t in Touchscreen.current.touches)
@@ -79,7 +84,7 @@ namespace TwinkleOps
                 Vector2 n=new(pos.x/Screen.width,1-pos.y/Screen.height);
                 if(Fire.Contains(n)) { fire=true;firePressed|=t.press.wasPressedThisFrame; continue; }
                 if(Knife.Contains(n)) { knife|=t.press.wasPressedThisFrame;continue; }
-                if(Aim.Contains(n)) { aim=true; continue; }
+                if(Aim.Contains(n)) { aim=true;aimPressed|=t.press.wasPressedThisFrame; continue; }
                 if(Reload.Contains(n)) { reload|=t.press.wasPressedThisFrame; continue; }
                 if(Interact.Contains(n)) { interact|=t.press.wasPressedThisFrame; continue; }
                 if(Bag.Contains(n)) { bag|=t.press.wasPressedThisFrame; continue; }

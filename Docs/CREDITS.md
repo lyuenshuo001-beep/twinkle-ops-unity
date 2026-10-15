@@ -27,3 +27,11 @@ Download source pages, SHA-256 hashes and original archives are retained under S
 * Metal safe with combination lock — johndh. Chosen license: **Creative Commons Attribution-ShareAlike 3.0 Unported**, https://creativecommons.org/licenses/by-sa/3.0/ . Source: https://opengameart.org/content/metal-safe-with-combination-lock . Changes: mesh conversion, UV atlas and weathered steel texture bake. The safe model, its adapted mesh and safe-specific textures remain under CC BY-SA 3.0; this does not relicense unrelated game code/assets. Original source is provided in Docs/AssetSources/Safe.blend, alongside the reproducible conversion script in Tools/BakeV11Assets.py. Do not remove this attribution or apply additional restrictions to these safe assets.
 
 V1.1 infected variants derive from the credited Pixelhouse worker: weighted head-mesh proportions, stature and material tints. They retain CC BY 3.0 attribution. These are variants of one base character, not independently authored character models.
+
+
+## V1.2 additions
+
+* Modular Factory Facade — James Ray Cock; Plastered Wall 02 — Charlotte Baglioni; Concrete Floor — eye-candy.xyz. Poly Haven, CC0, https://polyhaven.com/license . Sources: https://polyhaven.com/a/modular_factory_facade , https://polyhaven.com/a/plastered_wall_02 , https://polyhaven.com/a/concrete_floor . Selected facade modules exported with original UVs, 1K PBR maps converted to URP. Original connected floor plan, stairs, bridge and structural surfaces authored for TWINKLE OPS. Source metadata and SHA-256 records: Assets/ThirdParty/V12/SOURCES.json. Powered by Poly Haven.
+* Search reveal tones, impact texture masks and connecting stair/bridge meshes are original project work. No Delta Force assets, map layout or UI artwork are included.
+
+* Kloofendal 48d Partly Cloudy (Pure Sky) — Greg Zaal (original), Jarod Guest (sky edits). CC0, https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky . 2K HDR panorama, exposure and rotation adjusted for the original level.
